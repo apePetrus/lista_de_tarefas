@@ -49,8 +49,7 @@ def menu():  # Menu principal
 
 	# Tratamento de erro dentro de cada opção
 	try:
-		opcao = int(input('\nDigite o número da opção que deseja escolh\
-er: '))
+		opcao = int(input('\nDigite o número da opção que deseja escolher: '))
 
 		if opcao == 1:
 			adicionar()
@@ -93,12 +92,11 @@ def concluir():
 	visualizar()  # Ajudar o usuário a visualizar o que ele fará.
 
 	try:  # Tratamento de erro
-		numero_tarefa = int(input('Digite o número da tarefa que deseja\
- marcar como concluída: '))  # Coletar input do usuário
+		numero_tarefa = int(input('Digite o número da tarefa que deseja marcar como concluída: '))
+		# Coletar input do usuário
 
 		if numero_tarefa <1 or numero_tarefa > len(tarefas):
-			print('Número de tarefa inválido. Por favor, digite um núme\
-ro válido.')
+			print('Número de tarefa inválido. Por favor, digite um número válido.')
 		else:
 			tarefas['Concluída'][numero_tarefa - 1] = 'Concluída'
 			# Marca a tarefa dada pelo usuário como concluída.
@@ -119,8 +117,7 @@ def remover():  # Remover uma tarefa da lista.
 
 
 	try:  # Tratamento de erros.
-		numero_tarefa = int(input('Digite o número da tarefa que deseja\
- excluir: '))
+		numero_tarefa = int(input('Digite o número da tarefa que deseja excluir: '))
 
 		'''Verificar se a entrada foi válida. Dessa forma, indicar em
 		caso de erro. Se for maior que o número de dados na lista ou
@@ -128,19 +125,17 @@ def remover():  # Remover uma tarefa da lista.
 		enviar uma mensagem de erro. Caso insira um caractere inválido
 		ele enviará uma mensagem de erro.'''
 		if numero_tarefa < 1 or numero_tarefa > len(tarefas):
-			print('Número de tarefa inválido. Por favor, digite um núme\
-ro válido.')
+			print('Número de tarefa inválido. Por favor, digite um número válido.')
 		else:
 			'''
 			Usar o método 'pop' para remover a tarefa da lista e manter
 			pareado com o número na lista.
 			'''
 			tarefa_removida = tarefas['Tarefa'].pop(numero_tarefa - 1)
-			tarefa_concluida = tarefas['Concluída'].pop(numero_tarefa -\
-1)
+			tarefa_concluida = tarefas['Concluída'].pop(numero_tarefa - 1)
 
-			print(f'A tarefa "{tarefa_removida}" foi removida da lista.\
-')  # Indicar ao usuário qual item fora removido.
+			print(f'A tarefa "{tarefa_removida}" foi removida da lista.')
+			# Indicar ao usuário qual item fora removido.
 
 
 	except ValueError:
