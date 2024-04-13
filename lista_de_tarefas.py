@@ -34,7 +34,7 @@ def limpar():
 def menu():  # Menu principal
 	limpar()
 
-	print('LISTA DE TAREFAS\n')
+	print('LISTA DE TAREFAS')
 	
 	visualizar()  # Visualizar a lista logo no menu
 
@@ -44,7 +44,8 @@ def menu():  # Menu principal
 	print('1 - Adicionar tarefa')
 	print('2 - Marcar tarefa como concluída')
 	print('3 - Remover tarefa')
-	print('4 - Sair')
+	print('4 - Editar')
+	print('5 - Sair')
 
 
 	# Tratamento de erro dentro de cada opção
@@ -58,8 +59,11 @@ def menu():  # Menu principal
 		elif opcao == 2:
 			concluir()
 		elif opcao == 4:
+			editar()
+		elif opcao == 5:
 			sair()
-
+		else:
+			menu()
 
 	except ValueError:
 		menu()
@@ -107,23 +111,45 @@ def concluir():
 	menu()
 
 
+def editar():  # Editar o nome de uma tarefa da lista.
+	limpar()
+
+	visualizar()  # Mostrar a lista para que o usuário possa ver o que irá editar.
+
+
+	try:  # Tratamento de erros.
+		numero_tarefa = int(input('Digite o número da terafa que deseja editar: '))
+
+		if numero_tarefa < 1 or numero_tarefa > len(tarefas):
+			print('Número de tarefa inválido. Por favor, digite um número válido.')
+		else:
+			novo_nome = input('Insira o novo nome da tarefa: ')  # Solicita um novo nome
+
+			tarefas['Tarefa'][numero_tarefa - 1] = novo_nome
+			# Muda o nome da tarefa a partir do índice da lista!
+
+			print(f'A tarefa {numero_tarefa} foi renomeada com sucesso.')
+
+	except ValueError:
+		resposta_erro()
+
+	voltar()
+	menu()
 
 
 def remover():  # Remover uma tarefa da lista.
 	limpar()
 
-	visualizar()  # Mostrar a lista para que o usuário possa ver o que
-				  # irá remover.
+	visualizar()  # Mostrar a lista para que o usuário possa ver o que irá remover.
 
 
 	try:  # Tratamento de erros.
 		numero_tarefa = int(input('Digite o número da tarefa que deseja excluir: '))
 
-		'''Verificar se a entrada foi válida. Dessa forma, indicar em
-		caso de erro. Se for maior que o número de dados na lista ou
-		se for menor que 1 (a lista é enumerada de 1 a infinito), irá
-		enviar uma mensagem de erro. Caso insira um caractere inválido
-		ele enviará uma mensagem de erro.'''
+		'''Verificar se a entrada foi válida. Dessa forma, indicar em caso de erro.
+		Se for maior que o número de dados na lista ou se for menor que 1
+		(a lista é enumerada de 1 a infinito), irá enviar uma mensagem de erro.
+		Caso insira um caractere inválido ele enviará uma mensagem de erro.'''
 		if numero_tarefa < 1 or numero_tarefa > len(tarefas):
 			print('Número de tarefa inválido. Por favor, digite um número válido.')
 		else:
@@ -136,7 +162,6 @@ def remover():  # Remover uma tarefa da lista.
 
 			print(f'A tarefa "{tarefa_removida}" foi removida da lista.')
 			# Indicar ao usuário qual item fora removido.
-
 
 	except ValueError:
 		resposta_erro()
