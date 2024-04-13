@@ -1,10 +1,19 @@
 # To-do list
 
 
-import os
+import os  # Para função de limpeza da tela.
 
 
-tarefas = []
+tarefas = {'Tarefa': [], 'Concluída': []}
+# Dicionário para o nome da tarefa e seu status.
+
+
+def voltar():
+	input('Pressione Enter para voltar ao menu...')
+
+
+def resposta_erro():
+	print('Essa não é uma opção válida! Tente novamente.')
 
 
 def sair():  # Se despedir do usuário.
@@ -16,9 +25,9 @@ def sair():  # Se despedir do usuário.
 
 def limpar():
 	# Verificar o sistema operacional
-	if os.name == 'nt':  # Windows
+	if os.name == 'nt':  # Windows usa 'cls' para limpar (feio e porco)
 		os.system('cls')
-	else:  # Qualquer outro usar a função clear (belo e moral)
+	else:  # Qualquer outro OS, usar a função 'clear' (belo e moral)
 		os.system('clear')
 
 
@@ -33,31 +42,34 @@ def menu():  # Menu principal
 	# Listar as opções do usuário
 	print('\nO que deseja fazer?')
 	print('1 - Adicionar tarefa')
-	print('2 - Remover tarefa')
-	print('3 - Sair')
+	print('2 - Marcar tarefa como concluída')
+	print('3 - Remover tarefa')
+	print('4 - Sair')
 
 
 	# Tratamento de erro dentro de cada opção
 	try:
-		opcao = int(input('Digite o número da opção que deseja escolher\
-: '))
+		opcao = int(input('\nDigite o número da opção que deseja escolh\
+er: '))
 
 		if opcao == 1:
 			adicionar()
-		elif opcao == 2:
-			remover()
 		elif opcao == 3:
+			remover()
+		elif opcao == 2:
+			concluir()
+		elif opcao == 4:
 			sair()
 
 
 	except ValueError:
-		print('Essa não é uma opção válida! Tente novamente.')
 		menu()
 
 
 def visualizar():  # Imprime a lista de tarefas.
-	for posicao, tarefa in enumerate(tarefas, start=1):
-		print(f'{posicao} - {tarefa}')
+	for posicao, tarefa in enumerate(tarefas['Tarefa'], start=1):
+		concluida = tarefas["Concluída"][posicao - 1]
+		print(f'{posicao} - {tarefa} - {concluida}')
 
 
 def adicionar():  # Adicionar uma nova tarefa à lista.
@@ -65,13 +77,38 @@ def adicionar():  # Adicionar uma nova tarefa à lista.
 
 	nova_tarefa = input('Dê um nome para a nova tarefa: ')
 
-	tarefas.append(nova_tarefa)
+	tarefas['Tarefa'].append(nova_tarefa)
+	tarefas['Concluída'].append('A fazer')
 	'''Enviar o input do usuário (nova_tarefa) à lista (tarefas)'''
 
 	print(f'A tarefa "{nova_tarefa}" foi adicionada com sucesso.')
 
-	input('Pressione Enter para voltar ao menu...')
+	voltar()
 	menu()
+
+
+def concluir():
+	limpar()
+
+	visualizar()  # Ajudar o usuário a visualizar o que ele fará.
+
+	try:  # Tratamento de erro
+		numero_tarefa = int(input('Digite o número da tarefa que deseja\
+ marcar como concluída: '))  # Coletar input do usuário
+
+		if numero_tarefa <1 or numero_tarefa > len(tarefas):
+			print('Número de tarefa inválido. Por favor, digite um núme\
+ro válido.')
+		else:
+			tarefas['Concluída'][numero_tarefa - 1] = 'Concluída'
+			# Marca a tarefa dada pelo usuário como concluída.
+
+	except ValueError:
+		resposta_erro()
+
+	menu()
+
+
 
 
 def remover():  # Remover uma tarefa da lista.
@@ -93,16 +130,23 @@ def remover():  # Remover uma tarefa da lista.
 		if numero_tarefa < 1 or numero_tarefa > len(tarefas):
 			print('Número de tarefa inválido. Por favor, digite um núme\
 ro válido.')
-		else:  # Usar o método 'pop' para remover a tarefa da lista.
-			tarefa_removida = tarefas.pop(numero_tarefa - 1)
+		else:
+			'''
+			Usar o método 'pop' para remover a tarefa da lista e manter
+			pareado com o número na lista.
+			'''
+			tarefa_removida = tarefas['Tarefa'].pop(numero_tarefa - 1)
+			tarefa_concluida = tarefas['Concluída'].pop(numero_tarefa -\
+1)
+
 			print(f'A tarefa "{tarefa_removida}" foi removida da lista.\
 ')  # Indicar ao usuário qual item fora removido.
 
-	except ValueError:
-		print('Entrada inválida. Por favor, digite um número inteiro vá\
-lido.')
 
-	input('Pressione Enter para voltar ao menu...')
+	except ValueError:
+		resposta_erro()
+
+	voltar()
 	menu()
 
 
