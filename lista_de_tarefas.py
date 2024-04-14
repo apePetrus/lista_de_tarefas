@@ -9,11 +9,11 @@ tarefas = {'Tarefa': [], 'Concluída': []}
 
 
 def voltar():
-	input('Pressione Enter para voltar ao menu...')
+	input('\nPressione Enter para voltar ao menu...')
 
 
 def resposta_erro():
-	print('Essa não é uma opção válida! Tente novamente.')
+	input('\nEssa não é uma opção válida! Tente novamente.')
 
 
 def sair():  # Se despedir do usuário.
@@ -45,7 +45,9 @@ def menu():  # Menu principal
 	print('2 - Marcar tarefa como concluída')
 	print('3 - Remover tarefa')
 	print('4 - Editar')
-	print('5 - Sair')
+	print('5 - Visualizar tarefas concluídas')
+	print('6 - Visualizar tarefas não concluídas')
+	print('7 - Sair')
 
 
 	# Tratamento de erro dentro de cada opção
@@ -54,13 +56,17 @@ def menu():  # Menu principal
 
 		if opcao == 1:
 			adicionar()
-		elif opcao == 3:
-			remover()
 		elif opcao == 2:
 			concluir()
+		elif opcao == 3:
+			remover()
 		elif opcao == 4:
 			editar()
 		elif opcao == 5:
+			visualizar_tarefas_concluidas()
+		elif opcao == 6:
+			visualizar_tarefas_nao_concluidas()
+		elif opcao == 7:
 			sair()
 		else:
 			menu()
@@ -73,6 +79,47 @@ def visualizar():  # Imprime a lista de tarefas.
 	for posicao, tarefa in enumerate(tarefas['Tarefa'], start=1):
 		concluida = tarefas["Concluída"][posicao - 1]
 		print(f'{posicao} - {tarefa} - {concluida}')
+
+
+def visualizar_e_obter():  # Utilizado para não haver repetição de código.
+	# Função para o usuário visualizar e dizer a tarefa que deseja editar/concluir/remover
+	visualizar()
+
+	entrada = input('\nDigite o número da tarefa: ')
+	if entrada.strip():  # Verifica se a entrada não está vazia.	
+		try:
+			return int(entrada)
+		except ValueError:
+			resposta_erro()
+	return None  # Retorna None se a entrada for inválida.
+
+	'''
+	O motivo de retornar None caso a entrada do usuário seja vazia é pelo fato de que o
+	código acaba dando erro quando o usuário dá uma entrada vazia para as funções concluir,
+	editar e remover. Nesse caso, fiz o código retornar None caso fosse uma entrada vazia,
+	possibilitando o processamento do erro.
+	'''
+
+
+def visualizar_tarefas_concluidas():
+	limpar()
+	print('TAREFAS CONCLUÍDAS')
+
+	for posicao, tarefa in enumerate(tarefas['Tarefa'], start=1):
+		if tarefas['Concluída'][posicao - 1] == 'Concluída':
+			print(f'{posicao} - {tarefa} - {tarefas["Concluída"][posicao - 1]}')
+	voltar()
+	menu()
+
+def visualizar_tarefas_nao_concluidas():
+	limpar()
+	print('TAREFAS NÃO CONCLUÍDAS')
+
+	for posicao, tarefa in enumerate(tarefas['Tarefa'], start=1):
+		if tarefas['Concluída'][posicao - 1] != 'Concluída':
+			print(f'{posicao} - {tarefa} - {tarefas["Concluída"][posicao - 1]}')
+	voltar()
+	menu()
 
 
 def adicionar():  # Adicionar uma nova tarefa à lista.
@@ -91,19 +138,20 @@ def adicionar():  # Adicionar uma nova tarefa à lista.
 
 
 def concluir():
-	limpar()
-
-	visualizar()  # Ajudar o usuário a visualizar o que ele fará.
-
 	try:  # Tratamento de erro
-		numero_tarefa = int(input('Digite o número da tarefa que deseja marcar como concluída: '))
-		# Coletar input do usuário
+		limpar()
+		print('CONCLUIR TAREFA')
 
-		if numero_tarefa <1 or numero_tarefa > len(tarefas):
-			print('Número de tarefa inválido. Por favor, digite um número válido.')
+		numero_tarefa = visualizar_e_obter()  # Coletar input do usuário
+
+		if numero_tarefa is not None:  # Tratar um erro que quebra o código ao retornar None
+			if numero_tarefa < 1 or numero_tarefa > len(tarefas['Tarefa']):
+				print('Número de tarefa inválido. Por favor, digite um número válido.')
+			else:
+				tarefas['Concluída'][numero_tarefa - 1] = 'Concluída'
+				# Marca a tarefa dada pelo usuário como concluída.
 		else:
-			tarefas['Concluída'][numero_tarefa - 1] = 'Concluída'
-			# Marca a tarefa dada pelo usuário como concluída.
+			resposta_erro()
 
 	except ValueError:
 		resposta_erro()
@@ -112,23 +160,22 @@ def concluir():
 
 
 def editar():  # Editar o nome de uma tarefa da lista.
-	limpar()
-
-	visualizar()  # Mostrar a lista para que o usuário possa ver o que irá editar.
-
-
 	try:  # Tratamento de erros.
-		numero_tarefa = int(input('Digite o número da terafa que deseja editar: '))
+		limpar()
+		print('EDITAR TAREFA')
 
-		if numero_tarefa < 1 or numero_tarefa > len(tarefas):
-			print('Número de tarefa inválido. Por favor, digite um número válido.')
-		else:
-			novo_nome = input('Insira o novo nome da tarefa: ')  # Solicita um novo nome
+		numero_tarefa = visualizar_e_obter()
 
-			tarefas['Tarefa'][numero_tarefa - 1] = novo_nome
-			# Muda o nome da tarefa a partir do índice da lista!
+		if numero_tarefa is not None:  # Tratar um erro que quebra o código ao retornar None
+			if numero_tarefa < 1 or numero_tarefa > len(tarefas['Tarefa']):
+				print('Número de tarefa inválido. Por favor, digite um número válido.')
+			else:
+				novo_nome = input('Insira o novo nome da tarefa: ')  # Solicita um novo nome
 
-			print(f'A tarefa {numero_tarefa} foi renomeada com sucesso.')
+				tarefas['Tarefa'][numero_tarefa - 1] = novo_nome
+				# Muda o nome da tarefa a partir do índice da lista!
+
+				print(f'A tarefa {numero_tarefa} foi renomeada com sucesso.')
 
 	except ValueError:
 		resposta_erro()
@@ -138,30 +185,29 @@ def editar():  # Editar o nome de uma tarefa da lista.
 
 
 def remover():  # Remover uma tarefa da lista.
-	limpar()
-
-	visualizar()  # Mostrar a lista para que o usuário possa ver o que irá remover.
-
-
 	try:  # Tratamento de erros.
-		numero_tarefa = int(input('Digite o número da tarefa que deseja excluir: '))
+		limpar()
+		print('REMOVER TAREFA')
 
+		numero_tarefa = visualizar_e_obter()
 		'''Verificar se a entrada foi válida. Dessa forma, indicar em caso de erro.
 		Se for maior que o número de dados na lista ou se for menor que 1
 		(a lista é enumerada de 1 a infinito), irá enviar uma mensagem de erro.
 		Caso insira um caractere inválido ele enviará uma mensagem de erro.'''
-		if numero_tarefa < 1 or numero_tarefa > len(tarefas):
-			print('Número de tarefa inválido. Por favor, digite um número válido.')
-		else:
-			'''
-			Usar o método 'pop' para remover a tarefa da lista e manter
-			pareado com o número na lista.
-			'''
-			tarefa_removida = tarefas['Tarefa'].pop(numero_tarefa - 1)
-			tarefa_concluida = tarefas['Concluída'].pop(numero_tarefa - 1)
+		
+		if numero_tarefa is not None:  # Tratar um erro que quebra o código ao retornar None
+			if numero_tarefa < 1 or numero_tarefa > len(tarefas['Tarefa']):
+				print('Número de tarefa inválido. Por favor, digite um número válido.')
+			else:
+				'''
+				Usar o método 'pop' para remover a tarefa da lista e manter
+				pareado com o número na lista.
+				'''
+				tarefa_removida = tarefas['Tarefa'].pop(numero_tarefa - 1)
+				tarefa_concluida = tarefas['Concluída'].pop(numero_tarefa - 1)
 
-			print(f'A tarefa "{tarefa_removida}" foi removida da lista.')
-			# Indicar ao usuário qual item fora removido.
+				print(f'A tarefa "{tarefa_removida}" foi removida da lista.')
+				# Indicar ao usuário qual item fora removido.
 
 	except ValueError:
 		resposta_erro()
