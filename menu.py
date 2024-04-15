@@ -2,10 +2,10 @@
 
 class Menu:
 	def __init__(self, task_manager):	
-		self.task_manager = task_manager
+		self.task_manager = task_manager  # Instanciar a classe TaskManager.
 
 
-	def mostrar_menu(self):
+	def mostrar_menu(self):  # Mostar todas as opções do menu.
 		self.task_manager.limpar()
 
 		print('LISTA DE TAREFAS')
@@ -24,17 +24,17 @@ class Menu:
 		print('7 - Sair')
 
 
-	def coletar_escolha(self):
+	def coletar_escolha(self):  # Coleta a escolha do usuário.
 		# Tratamento de erro dentro de cada opção
 		try:
 			opcao = int(input('\nDigite o número da opção que deseja escolher: '))
-			return opcao
+			return opcao  # Retorna a escolha do usuário sobre o menu.
 
 		except ValueError:
 			self.mostrar_menu()
 
 
-	def processar_escolha(self, opcao):
+	def processar_escolha(self, opcao):  # Processa a escolha do usuário e roda a função necessária.
 		if opcao == 1:
 			self.task_manager.adicionar()  # Chamar o método adicionar da classe TaskManager
 		elif opcao == 2:
@@ -53,8 +53,9 @@ class Menu:
 			self.mostrar_menu()
 
 
-	def executar(self):
-		while True:
+	def executar(self):  # Loop principal do programa.
+		'''Mostra o menu, coleta a escolha do usuário e processa ela.'''
+		while True:  # Repetir até que o usuário escolha sair do programa.
 			self.mostrar_menu()
 			opcao = self.coletar_escolha()
 			if opcao is not None:

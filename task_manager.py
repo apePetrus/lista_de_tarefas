@@ -6,15 +6,15 @@ import os
 
 class TaskManager:
 	def __init__(self):
-		self.tarefas = {'Tarefa': [], 'Concluída': []}
-		self.menu = Menu(self)
+		self.tarefas = {'Tarefa': [], 'Concluída': []}  # A lista de tarefas
+		self.menu = Menu(self)  # Instanciando a classe Menu para ser usada
 
 
-	def voltar(self):
+	def voltar(self):  # Função para voltar ao menu.
 		input('\nPressione Enter para voltar ao menu...')
 
 
-	def resposta_erro(self):
+	def resposta_erro(self):  # Função para responder quando há erro do usuário.
 		input('\nEssa não é uma opção válida! Tente novamente.')
 
 
@@ -26,7 +26,7 @@ class TaskManager:
 		quit()
 
 
-	def limpar(self):
+	def limpar(self):  # Limpar a tela.
 		# Verificar o sistema operacional
 		if os.name == 'nt':  # Windows usa 'cls' para limpar (feio e porco)
 			os.system('cls')
@@ -60,35 +60,37 @@ class TaskManager:
 		'''
 
 
-	def visualizar_tarefas_concluidas(self):
+	def visualizar_tarefas_concluidas(self):  # Visualizar apenas tarefas concluídas.
 		self.limpar()
 		print('TAREFAS CONCLUÍDAS')
 
 		for posicao, tarefa in enumerate(self.tarefas['Tarefa'], start=1):
 			if self.tarefas['Concluída'][posicao - 1] == 'Concluída':
+				# Verificar se a tarefa está marcada como concluída.
 				print(f'{posicao} - {tarefa} - {self.tarefas["Concluída"][posicao - 1]}')
 		self.voltar()
 		self.menu.executar()
 
 
-	def visualizar_tarefas_nao_concluidas(self):
+	def visualizar_tarefas_nao_concluidas(self):  # Visualizar apenas tarefas não concluídas.
 		self.limpar()
 		print('TAREFAS NÃO CONCLUÍDAS')
 
 		for posicao, tarefa in enumerate(self.tarefas['Tarefa'], start=1):
 			if self.tarefas['Concluída'][posicao - 1] != 'Concluída':
+				# Verificar se a tarefa não está marcada como concluída.
 				print(f'{posicao} - {tarefa} - {self.tarefas["Concluída"][posicao - 1]}')
 		self.voltar()
 		self.menu.executar()
 
 
-	def adicionar(self):
+	def adicionar(self):  # Adicionar uma nova tarefa.
 			self.limpar()
 
 			nova_tarefa = input('Dê um nome para a nova tarefa: ')
 
 			self.tarefas['Tarefa'].append(nova_tarefa)
-			self.tarefas['Concluída'].append('A fazer')
+			self.tarefas['Concluída'].append('A fazer')  # Definir que a tarefa está por fazer (padrão)
 			'''Enviar o input do usuário (nova_tarefa) à lista (tarefas)'''
 
 			print(f'A tarefa "{nova_tarefa}" foi adicionada com sucesso.')
@@ -97,7 +99,7 @@ class TaskManager:
 			self.menu.executar()
 
 
-	def concluir(self):
+	def concluir(self):  # Concluir uma tarefa
 		try:  # Tratamento de erro
 			self.limpar()
 			print('CONCLUIR TAREFA')
