@@ -6,10 +6,6 @@ class Menu:
 
 
 	def mostrar_menu(self):  # Mostar todas as opções do menu.
-		self.task_manager.limpar()
-
-		print('LISTA DE TAREFAS')
-		
 		self.task_manager.visualizar()  # Chamar o método de visualizar da classe TaskManager
 
 

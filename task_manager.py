@@ -2,6 +2,7 @@
 
 from menu import Menu
 import os
+from functools import wraps
 
 
 class TaskManager:
@@ -10,20 +11,17 @@ class TaskManager:
 		self.menu = Menu(self)  # Instanciando a classe Menu para ser usada
 
 
-	def voltar(self):  # Função para voltar ao menu.
-		input('\nPressione Enter para voltar ao menu...')
+	def voltar(func):  # Decorador para voltar ao menu.
+		@wraps(func)
+		def wrapper(*args, **kwargs):
+			resultado = func(*args, **kwargs)  # Chamada da função decorada
+			input('\nPressione Enter para voltar ao menu...')
+			return  # Retorna o resultado da função decorada 
+		return wrapper
 
 
 	def resposta_erro(self):  # Função para responder quando há erro do usuário.
 		input('\nEssa não é uma opção válida! Tente novamente.')
-
-
-	def sair(self):  # Se despedir do usuário.
-		self.limpar()
-
-		print('Até breve!')
-		input('Encerrando o programa. Digite Enter para sair...')
-		quit()
 
 
 	def limpar(self):  # Limpar a tela.
@@ -34,7 +32,24 @@ class TaskManager:
 			os.system('clear')
 
 
+	def clear_screen(func):  # Decorador para limpar a tela
+		@wraps(func)  # Função para manter os metadados da função original.
+		def wrapper(*args, **kwargs):
+			os.system('cls' if os.name == 'nt' else 'clear')  # Limpar de acordo com o OS
+			return func(*args, **kwargs)  # Rodar a função como necessário.
+		return wrapper
+
+
+	@clear_screen
+	def sair(self):  # Se despedir do usuário.
+		print('Até breve!')
+		input('Encerrando o programa. Digite Enter para sair...')
+		quit()
+
+
+	@clear_screen
 	def visualizar(self):  # Imprime a lista de tarefas.
+		print('LISTA DE TAREFAS')
 		for posicao, tarefa in enumerate(self.tarefas['Tarefa'], start=1):
 			concluida = self.tarefas["Concluída"][posicao - 1]
 			print(f'{posicao} - {tarefa} - {concluida}')
@@ -60,32 +75,31 @@ class TaskManager:
 		'''
 
 
+	@voltar
+	@clear_screen
 	def visualizar_tarefas_concluidas(self):  # Visualizar apenas tarefas concluídas.
-		self.limpar()
 		print('TAREFAS CONCLUÍDAS')
 
 		for posicao, tarefa in enumerate(self.tarefas['Tarefa'], start=1):
 			if self.tarefas['Concluída'][posicao - 1] == 'Concluída':
 				# Verificar se a tarefa está marcada como concluída.
 				print(f'{posicao} - {tarefa} - {self.tarefas["Concluída"][posicao - 1]}')
-		self.voltar()
-		self.menu.executar()
 
 
+	@voltar
+	@clear_screen
 	def visualizar_tarefas_nao_concluidas(self):  # Visualizar apenas tarefas não concluídas.
-		self.limpar()
 		print('TAREFAS NÃO CONCLUÍDAS')
 
 		for posicao, tarefa in enumerate(self.tarefas['Tarefa'], start=1):
 			if self.tarefas['Concluída'][posicao - 1] != 'Concluída':
 				# Verificar se a tarefa não está marcada como concluída.
 				print(f'{posicao} - {tarefa} - {self.tarefas["Concluída"][posicao - 1]}')
-		self.voltar()
-		self.menu.executar()
 
 
+	@voltar
+	@clear_screen
 	def adicionar(self):  # Adicionar uma nova tarefa.
-			self.limpar()
 
 			nova_tarefa = input('Dê um nome para a nova tarefa: ')
 
@@ -95,13 +109,11 @@ class TaskManager:
 
 			print(f'A tarefa "{nova_tarefa}" foi adicionada com sucesso.')
 
-			self.voltar()
-			self.menu.executar()
 
-
+	@voltar
+	@clear_screen
 	def concluir(self):  # Concluir uma tarefa
 		try:  # Tratamento de erro
-			self.limpar()
 			print('CONCLUIR TAREFA')
 
 			numero_tarefa = self.visualizar_e_obter()  # Coletar input do usuário
@@ -112,18 +124,18 @@ class TaskManager:
 				else:
 					self.tarefas['Concluída'][numero_tarefa - 1] = 'Concluída'
 					# Marca a tarefa dada pelo usuário como concluída.
+					print(f'A tarefa "{numero_tarefa}" foi definida como concluída')
 			else:
 				self.resposta_erro()
 
 		except ValueError:
 			self.resposta_erro()
 
-		self.menu.executar()
 
-
+	@voltar
+	@clear_screen
 	def editar(self):  # Editar o nome de uma tarefa da lista.
 		try:  # Tratamento de erros.
-			self.limpar()
 			print('EDITAR TAREFA')
 
 			numero_tarefa = self.visualizar_e_obter()
@@ -142,13 +154,11 @@ class TaskManager:
 		except ValueError:
 			self.resposta_erro()
 
-		self.voltar()
-		self.menu.executar()
 
-
+	@voltar
+	@clear_screen
 	def remover(self):  # Remover uma tarefa da lista.
 		try:  # Tratamento de erros.
-			self.limpar()
 			print('REMOVER TAREFA')
 
 			numero_tarefa = self.visualizar_e_obter()
@@ -173,6 +183,3 @@ class TaskManager:
 
 		except ValueError:
 			self.resposta_erro()
-
-		self.voltar()
-		self.menu.executar()
