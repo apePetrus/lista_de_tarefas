@@ -6,5 +6,6 @@ Consta com as funcionalidades de:
 - Marcar tarefas como concluídas
 - Remover tarefas
 - Editar tarefas
-
-Pretendo futuramente implementar um meio de salvar as tarefas por meio de um arquivo JSON. 
+- Visualizar apenas as tarefas concluídas
+- Visualizar apenas as tarefas não concluídas
+- Tarefas são salvas num arquivo JSON
