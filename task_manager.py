@@ -3,12 +3,26 @@
 from menu import Menu
 import os
 from functools import wraps
-
+import json
 
 class TaskManager:
 	def __init__(self):
-		self.tarefas = {'Tarefa': [], 'Concluída': []}  # A lista de tarefas
+		# self.tarefas = {'Tarefa': [], 'Concluída': []}  # A lista de tarefas
+		self.tarefas = self.carregar_tarefas()
 		self.menu = Menu(self)  # Instanciando a classe Menu para ser usada
+
+
+	def carregar_tarefas(self):
+		try:
+			with open('listaDeTarefas.json', 'r') as f:
+				return json.load(f)
+		except FileNotFoundError:
+			return {'Tarefa': [], 'Concluída': []}
+
+
+	def salvar_tarefas(self):
+		with open('listaDeTarefas.json', 'w') as f:
+			json.dump(self.tarefas, f)
 
 
 	def voltar(func):  # Decorador para voltar ao menu.
@@ -22,14 +36,6 @@ class TaskManager:
 
 	def resposta_erro(self):  # Função para responder quando há erro do usuário.
 		input('\nEssa não é uma opção válida! Tente novamente.')
-
-
-	def limpar(self):  # Limpar a tela.
-		# Verificar o sistema operacional
-		if os.name == 'nt':  # Windows usa 'cls' para limpar (feio e porco)
-			os.system('cls')
-		else:  # Qualquer outro OS, usar a função 'clear' (belo e moral)
-			os.system('clear')
 
 
 	def clear_screen(func):  # Decorador para limpar a tela
@@ -109,6 +115,8 @@ class TaskManager:
 
 			print(f'A tarefa "{nova_tarefa}" foi adicionada com sucesso.')
 
+			self.salvar_tarefas()  # Salvar tarefas após adiciona.
+
 
 	@voltar
 	@clear_screen
@@ -125,6 +133,8 @@ class TaskManager:
 					self.tarefas['Concluída'][numero_tarefa - 1] = 'Concluída'
 					# Marca a tarefa dada pelo usuário como concluída.
 					print(f'A tarefa "{numero_tarefa}" foi definida como concluída')
+
+					self.salvar_tarefas()
 			else:
 				self.resposta_erro()
 
@@ -150,6 +160,8 @@ class TaskManager:
 					# Muda o nome da tarefa a partir do índice da lista!
 
 					print(f'A tarefa {numero_tarefa} foi renomeada com sucesso.')
+
+					self.salvar_tarefas()
 
 		except ValueError:
 			self.resposta_erro()
@@ -180,6 +192,8 @@ class TaskManager:
 
 					print(f'A tarefa "{tarefa_removida}" foi removida da lista.')
 					# Indicar ao usuário qual item fora removido.
+
+					self.salvar_tarefas()
 
 		except ValueError:
 			self.resposta_erro()
